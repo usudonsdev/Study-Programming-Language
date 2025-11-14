@@ -1,0 +1,8 @@
+node_modules
+vendor
+.DS_Store
+.env
+.env.local
+Next/node_modules
+Laravel/vendor
+Laravel/storage/app/public
