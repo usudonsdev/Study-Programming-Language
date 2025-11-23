@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('home_budgets', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
             $table->Integer('category_id');
             $table->Integer('price');
             $table->timestamps();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Category;
+use App\Models\HomeBudget;
 
 class HomebudgetController extends Controller
 {
@@ -15,7 +16,10 @@ class HomebudgetController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return view('homebudget.index', compact("categories"));
+        $budgets = HomeBudget::all();
+
+        // 3. ビューに渡す（'budgets' を追加する）
+        return view('homebudget.index', compact("categories", 'budgets'));
     }
 
     /**
@@ -30,9 +34,36 @@ class HomebudgetController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-    }
+        {
+        // 【検問1】そもそもここまでデータが届いているか？
+        // dd($request->all()); 
+
+            $validated = $request->validate([
+                'date' => 'required|date',
+                'category'=> 'required|numeric',
+                'price'=> 'required|numeric',
+            ]);
+
+            // 【検問2】バリデーション（入力チェック）を突破できたか？
+
+            // ↓ 修正済みの保存コード
+            $result = HomeBudget::create([
+                'date' => $request->date,
+                'category_id' => $request->category, // ← ★ここが category_id になっているか再確認
+                'price' => $request->price
+            ]);
+
+            // 【検問3】保存が成功したか？
+            //dd('保存成功！作成されたデータ:', $result);
+
+            if (!empty($result)) {
+                session()->flash('flash_message','支出を登録しました');
+            } else {
+                session()->flash('flash_error_message','支出を登録できませんでした');
+            }
+
+            return redirect('/');
+        }
 
     /**
      * Display the specified resource.
